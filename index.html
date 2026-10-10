@@ -3,391 +3,857 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radio en Línea - Universal</title>
+<title>Radio Universal - Sintonizador Mundial</title>
+<!-- Tailwind CSS for modern responsive styling -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome for standard intuitive icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  * { box-sizing: border-box; }
-  body, html {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .radio-container {
-    width: 100%;
-    max-width: 500px;
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  /* Cabecera */
-  .radio-header {
-    text-align: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 12px;
-  }
-  .radio-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin: 0 0 4px 0;
-  }
-  .radio-subtitle {
-    font-size: 0.85rem;
-    color: #666;
-    margin: 0;
-  }
-
-  /* Reproductor principal */
-  .player-box {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    text-align: center;
-  }
-  .station-name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #2c3e50;
-    word-break: break-word;
-  }
-  .player-controls {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-  }
-  .btn-main {
-    flex: 2;
-    background: #0066cc;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-main:hover { background: #0052a3; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
   
-  .btn-fav-action {
-    flex: 1;
-    background: #fff;
-    color: #e67e22;
-    border: 2px solid #e67e22;
-    padding: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
   }
-  .btn-fav-action:hover {
-    background: #fdf3e6;
+  
+  .digital-font {
+    font-family: 'JetBrains Mono', monospace;
   }
 
-  /* Controles de Búsqueda y Filtros */
-  .search-box {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  /* Custom radio dial knob / slider styling */
+  input[type=range].dial-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
   }
-  .label-text {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #444;
-  }
-  .input-row {
-    display: flex;
-    gap: 8px;
-  }
-  .form-control {
-    flex: 1;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.95rem;
+  input[type=range].dial-slider:focus {
     outline: none;
   }
-  .form-control:focus { border-color: #0066cc; }
+  input[type=range].dial-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+    background: #334155;
+    border-radius: 6px;
+    border: 1px solid #475569;
+  }
+  input[type=range].dial-slider::-webkit-slider-thumb {
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background: #38bdf8;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -9px;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6), inset 0 2px 4px rgba(255,255,255,0.8);
+    border: 2px solid #0284c7;
+    transition: transform 0.1s ease;
+  }
+  input[type=range].dial-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: #7dd3fc;
+  }
 
-  .btn-search {
-    background: #2ecc71;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
+  /* Custom scrollbars for clean lists */
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
   }
-  .btn-search:hover { background: #27ae60; }
+  .custom-scroll::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 4px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
 
-  /* Lista de estaciones */
-  .station-list {
-    max-height: 180px;
-    overflow-y: auto;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    background: #fff;
+  /* Audio spectrum animation effect */
+  .bar {
+    display: inline-block;
+    width: 4px;
+    height: 100%;
+    background-color: #38bdf8;
+    border-radius: 2px;
+    animation: bounce 1.2s ease-in-out infinite alternate;
   }
-  .station-item {
-    padding: 10px 12px;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #f1f3f5;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .station-item:hover { background: #f1f3f5; }
+  .bar:nth-child(2) { animation-delay: -0.2s; }
+  .bar:nth-child(3) { animation-delay: -0.4s; }
+  .bar:nth-child(4) { animation-delay: -0.6s; }
+  .bar:nth-child(5) { animation-delay: -0.8s; }
 
-  /* Sección de Favoritos */
-  .favorites-section {
-    border-top: 1px solid #eee;
-    padding-top: 12px;
+  @keyframes bounce {
+    0% { height: 15%; }
+    100% { height: 100%; }
   }
-  .favorites-title {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #444;
-    margin-bottom: 8px;
-  }
-  .favorites-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 140px;
-    overflow-y: auto;
-  }
-  .fav-card {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    padding: 8px 12px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-  }
-  .fav-card-name {
-    cursor: pointer;
-    font-weight: 500;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .fav-card-name:hover { color: #0066cc; }
-  .btn-delete {
-    background: none;
-    border: none;
-    color: #e74c3c;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 0 4px;
-    font-weight: bold;
+
+  .paused .bar {
+    animation-play-state: paused;
+    height: 20% !important;
   }
 </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 select-none">
 
-  <div class="radio-container">
-    <div class="radio-header">
-      <h1 class="radio-title">Radio en Línea</h1>
-      <p class="radio-subtitle">Escucha emisoras de todo el mundo fácilmente</p>
-    </div>
-
-    <!-- Reproductor Actual -->
-    <div class="player-box">
-      <div class="station-name" id="current-station-label">Selecciona una emisora de la lista o tus favoritos</div>
-      <div class="player-controls">
-        <button class="btn-main" id="play-btn" onclick="togglePlay()">Reproducir</button>
-        <button class="btn-fav-action" onclick="agregarAFavoritos()">⭐ Guardar</button>
+  <main class="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    
+    <!-- Top Header -->
+    <header class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xl font-bold">
+          <i class="fa-solid fa-radio"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            RADIO UNIVERSAL
+            <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold">Hi-Fi</span>
+          </h1>
+          <p class="text-xs text-slate-400">Sintonizador analógico-digital para todo el mundo</p>
+        </div>
       </div>
-    </div>
-
-    <!-- Buscador y selector de país -->
-    <div class="search-box">
-      <span class="label-text">Buscar emisora o país:</span>
-      <div class="input-row">
-        <select class="form-control" id="country-select" onchange="buscarPorPais()">
-          <option value="Argentina">🇦🇷 Argentina</option>
-          <option value="Spain">🇪🇸 España</option>
-          <option value="Mexico">🇲🇽 México</option>
-          <option value="United States">🇺🇸 Estados Unidos</option>
-          <option value="Colombia">🇨🇴 Colombia</option>
-          <option value="Chile">🇨🇱 Chile</option>
-        </select>
-        <input type="text" id="search-input" class="form-control" placeholder="Ej: La 100, Pop..." onkeypress="if(event.key==='Enter') buscarPorTexto()">
-        <button class="btn-search" onclick="buscarPorTexto()">Buscar</button>
+      
+      <!-- Quick Status -->
+      <div id="status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 text-xs font-medium border border-slate-700">
+        <span class="w-2.5 h-2.5 rounded-full bg-slate-500" id="status-dot"></span>
+        <span id="status-text">Listo para sintonizar</span>
       </div>
+    </header>
+
+    <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <section class="lg:col-span-7 flex flex-col gap-5">
+        
+        <!-- Main Display Panel -->
+        <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 shadow-inner flex flex-col justify-between relative overflow-hidden min-h-[220px]">
+          <!-- Display Grid Lines Background Effect -->
+          <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 pointer-events-none"></div>
+
+          <!-- Top Row: Band Indicator & Audio Visualizer -->
+          <div class="flex justify-between items-start z-10">
+            <div>
+              <span id="display-band-tag" class="px-3 py-1 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-xs tracking-wider uppercase">
+                Banda FM
+              </span>
+              <span id="display-country-tag" class="ml-2 px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs font-medium border border-slate-700">
+                <i class="fa-solid fa-globe text-sky-400 mr-1"></i> Mundial
+              </span>
+            </div>
+
+            <!-- Visualizer Animated Bars -->
+            <div id="visualizer-container" class="h-6 flex items-end gap-1 px-2 py-1 rounded bg-slate-900 border border-slate-800 paused">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+
+          <!-- Middle Row: Digital Frequency Display -->
+          <div class="my-4 text-center z-10">
+            <div class="text-xs uppercase tracking-widest text-slate-500 font-semibold mb-1">Frecuencia Sintonizada</div>
+            <div class="flex items-baseline justify-center gap-2">
+              <span id="freq-display-value" class="digital-font text-5xl sm:text-6xl font-extrabold text-sky-400 tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                98.5
+              </span>
+              <span id="freq-display-unit" class="digital-font text-xl sm:text-2xl font-bold text-sky-500">
+                MHz
+              </span>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Station Title & Info -->
+          <div class="z-10 bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-2">
+            <div class="truncate flex items-center gap-2.5">
+              <i class="fa-solid fa-tower-broadcast text-sky-400 text-lg flex-shrink-0" id="broadcast-icon"></i>
+              <div class="truncate">
+                <div id="station-title" class="text-sm font-bold text-white truncate">Gire la rueda o elija una emisora</div>
+                <div id="station-subtext" class="text-xs text-slate-400 truncate">Sintonizador manual listo</div>
+              </div>
+            </div>
+            
+            <button id="add-fav-btn" onclick="toggleCurrentFavorite()" title="Añadir a favoritos" class="flex-shrink-0 w-9 h-9 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center transition-all">
+              <i class="fa-regular fa-star text-lg" id="fav-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+          
+          <!-- 1) Selector de Banda -->
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              1. Selección de Banda de Frecuencia
+            </label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="setBand('FM')" id="band-btn-FM" class="band-btn py-2.5 px-3 rounded-xl border text-sm font-bold flex flex-col items-center gap-0.5 transition-all bg-sky-500 text-slate-950 border-sky-400 shadow-lg shadow-sky-500/20">
+                <span>FM</span>
+                <span class="text-[10px] font-normal opacity-80">87.5-108 MHz</span>
+              </button>
+              <button onclick="setBand('AM')" id="band-btn-AM" class="band-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-bold flex flex-col items-center gap-0.5 transition-all">
+                <span>AM</span>
+                <span class="text-[10px] font-normal opacity-70">530-1700 kHz</span>
+              </button>
+              <button onclick="setBand('OC')" id="band-btn-OC" class="band-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-bold flex flex-col items-center gap-0.5 transition-all">
+                <span>OC / SW</span>
+                <span class="text-[10px] font-normal opacity-70">3-30 MHz</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2) Cambiafrecuencia (Dial / Rueda de Sintonía) -->
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label for="freq-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-sky-400"></i>
+                2. Cambiafrecuencia (Sintonizador Dial)
+              </label>
+              <span id="range-bounds-label" class="text-xs text-slate-500 font-mono">87.5 - 108.0 MHz</span>
+            </div>
+            
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col gap-2">
+              <!-- Frequency Slider -->
+              <input type="range" id="freq-slider" min="87.5" max="108.0" step="0.1" value="98.5" class="dial-slider" oninput="onSliderMove(this.value)" onchange="onSliderRelease(this.value)">
+              
+              <!-- Fine Tune Buttons -->
+              <div class="flex justify-between items-center pt-1">
+                <button onclick="stepFrequency(-1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                  <i class="fa-solid fa-minus"></i> Ajuste fino
+                </button>
+                <span class="text-[11px] text-slate-400 italic text-center hidden sm:block">Deslice para buscar radios cercanas</span>
+                <button onclick="stepFrequency(1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                  Ajuste fino <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3) Playback Control & Action Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button id="play-toggle-btn" onclick="togglePlay()" class="w-full py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-950 font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-sky-500/25 transition-all">
+              <i class="fa-solid fa-play text-lg" id="play-btn-icon"></i>
+              <span id="play-btn-text">REPRODUCIR</span>
+            </button>
+
+            <button onclick="addCurrentToFavorites()" class="w-full py-3 px-4 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 active:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold text-sm flex items-center justify-center gap-2 transition-all">
+              <i class="fa-solid fa-star"></i>
+              <span>Guardar en Favoritos</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="lg:col-span-5 flex flex-col gap-5">
+        
+        <!-- Country & Filter Controls -->
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+            3. Filtro por País y Nombre
+          </label>
+          
+          <div class="flex flex-col gap-2">
+            <!-- Country Dropdown -->
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-earth-americas"></i>
+              </div>
+              <select id="country-select" onchange="onCountryChange()" class="w-full pl-9 pr-8 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-semibold text-white focus:outline-none focus:border-sky-500 transition-all appearance-none cursor-pointer">
+                <option value="">🌐 Todos los países (Global)</option>
+                <!-- Populated via JS API or preset list -->
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 text-xs">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </div>
+
+            <!-- Text Search Input -->
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+              <input type="text" id="search-input" placeholder="Buscar emisora (Ej: Los 40, Disney...)" onkeypress="if(event.key==='Enter') searchStationsByText()" class="w-full pl-9 pr-20 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all">
+              <button onclick="searchStationsByText()" class="absolute right-1 top-1 bottom-1 px-3 bg-slate-800 hover:bg-slate-700 text-sky-400 font-bold rounded-lg text-xs transition-all border border-slate-700">
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Controls for List View -->
+        <div class="flex-1 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col min-h-[300px]">
+          <div class="flex border-b border-slate-800 pb-3 mb-3 justify-between items-center">
+            <div class="flex gap-2">
+              <button id="tab-btn-stations" onclick="switchListTab('stations')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                <i class="fa-solid fa-list-ul mr-1"></i> Emisoras (<span id="stations-count">0</span>)
+              </button>
+              <button id="tab-btn-favs" onclick="switchListTab('favs')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-800 text-slate-400 border border-slate-700 hover:text-white">
+                <i class="fa-solid fa-star text-amber-400 mr-1"></i> Mis Favoritos (<span id="favs-count">0</span>)
+              </button>
+            </div>
+
+            <button onclick="refreshCurrentStationList()" title="Actualizar lista" class="text-xs text-slate-400 hover:text-sky-400 p-1">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+
+          <!-- Tab 1: Live Stations Container -->
+          <div id="tab-content-stations" class="flex-1 overflow-y-auto custom-scroll max-h-[260px] pr-1 space-y-2">
+            <div class="text-center py-8 text-slate-500 text-xs">
+              <i class="fa-solid fa-spinner fa-spin text-xl mb-2 text-sky-400"></i>
+              <p>Cargando emisoras mundiales...</p>
+            </div>
+          </div>
+
+          <!-- Tab 2: Favorites Container -->
+          <div id="tab-content-favs" class="flex-1 overflow-y-auto custom-scroll max-h-[260px] pr-1 space-y-2 hidden">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </section>
+
     </div>
 
-    <!-- Lista de Resultados -->
-    <div class="station-list" id="station-list">
-      <div class="station-item" style="color: #888; justify-content: center;">Elija un país o escriba un nombre arriba</div>
-    </div>
+    <!-- Footer Note -->
+    <footer class="bg-slate-950 px-6 py-3 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-wrap justify-between items-center gap-2">
+      <span>Radio Universal &copy; Sintonizador de Audio de Alta Fidelidad</span>
+      <span class="text-[11px] text-slate-600">Alimentado por Radio-Browser API (HTTPS Stream Guard)</span>
+    </footer>
+  </main>
 
-    <!-- Mis Favoritos -->
-    <div class="favorites-section">
-      <div class="favorites-title">⭐ Mis Emisoras Favoritas</div>
-      <div class="favorites-list" id="favorites-list">
-        <!-- Cargado por JS -->
-      </div>
-    </div>
-  </div>
-
-  <audio id="audio-player"></audio>
+  <!-- Audio Element -->
+  <audio id="audio-element" crossorigin="anonymous" class="hidden"></audio>
 
   <script>
-    const audio = document.getElementById('audio-player');
-    const playBtn = document.getElementById('play-btn');
-    const stationLabel = document.getElementById('current-station-label');
+    /* Global Application State */
+    let currentBand = 'FM'; // 'FM', 'AM', 'OC'
+    let currentFrequency = 98.5; // Default start frequency
+    let currentCountry = ''; // Global default
+    let activeStation = null;
+    let isPlaying = false;
+    let activeTab = 'stations'; // 'stations' or 'favs'
+    let loadedStations = [];
     
-    let currentUrl = '';
-    let currentName = '';
-    
-    // Almacenamiento local para los favoritos que el usuario agregue manualmente
-    let favoritos = JSON.parse(localStorage.getItem('user_radio_favs')) || [];
-    renderizarFavoritos();
+    // Favorites initialized from LocalStorage
+    let favorites = [];
+    try {
+      favorites = JSON.parse(localStorage.getItem('radio_universal_favs')) || [];
+    } catch(e) {
+      favorites = [];
+    }
 
-    // Cargar emisoras de Argentina por defecto al abrir la página
-    buscarPorPais();
+    // Audio Element & Visualizer State
+    const audio = document.getElementById('audio-element');
+    const visualizer = document.getElementById('visualizer-container');
 
-    function buscarPorPais() {
-      const pais = document.getElementById('country-select').value;
-      stationLabel.textContent = `Buscando emisoras en ${pais}...`;
+    // Band Frequency Config
+    const BANDS = {
+      FM: { min: 87.5, max: 108.0, step: 0.1, unit: 'MHz', decimals: 1, default: 98.5 },
+      AM: { min: 530, max: 1700, step: 10, unit: 'kHz', decimals: 0, default: 910 },
+      OC: { min: 3.00, max: 30.00, step: 0.05, unit: 'MHz', decimals: 2, default: 15.20 }
+    };
 
-      fetch(`https://de1.api.radio-browser.info/json/stations/bycountry/${encodeURIComponent(pais)}?hidebroken=true&order=clickcount&reverse=true`)
+    // Predefined Countries List
+    const COUNTRIES_LIST = [
+      { name: "Argentina", code: "Argentina", flag: "🇦🇷" },
+      { name: "España", code: "Spain", flag: "🇪🇸" },
+      { name: "México", code: "Mexico", flag: "🇲🇽" },
+      { name: "Estados Unidos", code: "United States", flag: "🇺🇸" },
+      { name: "Colombia", code: "Colombia", flag: "🇨🇴" },
+      { name: "Chile", code: "Chile", flag: "🇨🇱" },
+      { name: "Perú", code: "Peru", flag: "🇵🇪" },
+      { name: "Uruguay", code: "Uruguay", flag: "🇺🇾" },
+      { name: "Venezuela", code: "Venezuela", flag: "🇻🇪" },
+      { name: "Brasil", code: "Brazil", flag: "🇧🇷" },
+      { name: "Francia", code: "France", flag: "🇫🇷" },
+      { name: "Alemania", code: "Germany", flag: "🇩🇪" },
+      { name: "Italia", code: "Italy", flag: "🇮🇹" },
+      { name: "Reino Unido", code: "United Kingdom", flag: "🇬🇧" }
+    ];
+
+    /* Initialize Application on Page Load */
+    window.addEventListener('DOMContentLoaded', () => {
+      populateCountries();
+      updateBandUI();
+      updateFavoritesListUI();
+      fetchStations();
+      
+      // Audio Event Listeners
+      audio.addEventListener('playing', () => {
+        isPlaying = true;
+        updatePlayBtnUI();
+        setStatus('ONLINE', 'bg-emerald-500', 'Reproduciendo en directo');
+        visualizer.classList.remove('paused');
+      });
+
+      audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayBtnUI();
+        setStatus('PAUSADO', 'bg-amber-500', 'En espera');
+        visualizer.classList.add('paused');
+      });
+
+      audio.addEventListener('error', () => {
+        isPlaying = false;
+        updatePlayBtnUI();
+        setStatus('ERROR', 'bg-rose-500', 'Emisión no disponible');
+        visualizer.classList.add('paused');
+      });
+    });
+
+    function populateCountries() {
+      const select = document.getElementById('country-select');
+      COUNTRIES_LIST.forEach(country => {
+        const opt = document.createElement('option');
+        opt.value = country.code;
+        opt.textContent = `${country.flag} ${country.name}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function setStatus(text, dotColorClass, subtext = '') {
+      const badgeText = document.getElementById('status-text');
+      const badgeDot = document.getElementById('status-dot');
+      badgeText.textContent = text;
+      badgeDot.className = `w-2.5 h-2.5 rounded-full ${dotColorClass}`;
+      
+      if (subtext) {
+        document.getElementById('station-subtext').textContent = subtext;
+      }
+    }
+
+    /* Band Changing Logic */
+    function setBand(band) {
+      if (!BANDS[band]) return;
+      currentBand = band;
+      const config = BANDS[band];
+      currentFrequency = config.default;
+
+      // Update Active Button Visuals
+      document.querySelectorAll('.band-btn').forEach(btn => {
+        btn.className = 'band-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-bold flex flex-col items-center gap-0.5 transition-all';
+      });
+      
+      const activeBtn = document.getElementById(`band-btn-${band}`);
+      if (activeBtn) {
+        activeBtn.className = 'band-btn py-2.5 px-3 rounded-xl border text-sm font-bold flex flex-col items-center gap-0.5 transition-all bg-sky-500 text-slate-950 border-sky-400 shadow-lg shadow-sky-500/20';
+      }
+
+      updateBandUI();
+      findNearestStationToFrequency();
+    }
+
+    function updateBandUI() {
+      const config = BANDS[currentBand];
+      const slider = document.getElementById('freq-slider');
+      
+      slider.min = config.min;
+      slider.max = config.max;
+      slider.step = config.step;
+      slider.value = currentFrequency;
+
+      document.getElementById('display-band-tag').textContent = `Banda ${currentBand}`;
+      document.getElementById('freq-display-unit').textContent = config.unit;
+      document.getElementById('range-bounds-label').textContent = `${config.min} - ${config.max} ${config.unit}`;
+      
+      updateFrequencyDisplay();
+    }
+
+    /* Slider / Dial Controls */
+    function onSliderMove(val) {
+      currentFrequency = parseFloat(val);
+      updateFrequencyDisplay();
+    }
+
+    function onSliderRelease(val) {
+      currentFrequency = parseFloat(val);
+      updateFrequencyDisplay();
+      findNearestStationToFrequency();
+    }
+
+    function stepFrequency(direction) {
+      const config = BANDS[currentBand];
+      let newFreq = currentFrequency + (direction * config.step);
+      if (newFreq < config.min) newFreq = config.min;
+      if (newFreq > config.max) newFreq = config.max;
+      
+      currentFrequency = parseFloat(newFreq.toFixed(config.decimals));
+      document.getElementById('freq-slider').value = currentFrequency;
+      updateFrequencyDisplay();
+      findNearestStationToFrequency();
+    }
+
+    function updateFrequencyDisplay() {
+      const config = BANDS[currentBand];
+      document.getElementById('freq-display-value').textContent = currentFrequency.toFixed(config.decimals);
+    }
+
+    /* Radio API Interactions */
+    function onCountryChange() {
+      const select = document.getElementById('country-select');
+      currentCountry = select.value;
+      
+      const tag = document.getElementById('display-country-tag');
+      if (currentCountry) {
+        const found = COUNTRIES_LIST.find(c => c.code === currentCountry);
+        tag.innerHTML = `<i class="fa-solid fa-location-dot text-sky-400 mr-1"></i> ${found ? found.name : currentCountry}`;
+      } else {
+        tag.innerHTML = `<i class="fa-solid fa-globe text-sky-400 mr-1"></i> Mundial`;
+      }
+
+      fetchStations();
+    }
+
+    function searchStationsByText() {
+      const input = document.getElementById('search-input');
+      const query = input.value.trim();
+      fetchStations(query);
+    }
+
+    function refreshCurrentStationList() {
+      fetchStations(document.getElementById('search-input').value.trim());
+    }
+
+    function fetchStations(searchQuery = '') {
+      const container = document.getElementById('tab-content-stations');
+      container.innerHTML = `
+        <div class="text-center py-8 text-slate-500 text-xs">
+          <i class="fa-solid fa-spinner fa-spin text-xl mb-2 text-sky-400"></i>
+          <p>Buscando emisoras...</p>
+        </div>
+      `;
+
+      let apiUrl = `https://de1.api.radio-browser.info/json/stations/search?limit=40&hidebroken=true&order=clickcount&reverse=true`;
+
+      if (currentCountry) {
+        apiUrl += `&country=${encodeURIComponent(currentCountry)}`;
+      }
+      if (searchQuery) {
+        apiUrl += `&name=${encodeURIComponent(searchQuery)}`;
+      }
+
+      fetch(apiUrl)
         .then(res => res.json())
         .then(data => {
-          const seguras = data.filter(s => s.url_resolved && s.url_resolved.startsWith('https://')).slice(0, 30);
-          mostrarResultados(seguras);
+          // Filter out HTTP streams to guarantee browser playback under HTTPS origin
+          loadedStations = data
+            .filter(st => st.url_resolved && st.url_resolved.startsWith('https://'))
+            .map((st, idx) => {
+              // Assign virtual frequencies based on index for dial tuner integration
+              const config = BANDS[currentBand];
+              const spread = (config.max - config.min) / 40;
+              const assignedFreq = parseFloat((config.min + (idx * spread)).toFixed(config.decimals));
+              return {
+                id: st.stationuuid || String(Math.random()),
+                name: st.name.trim() || "Emisora Desconocida",
+                country: st.country || "Mundial",
+                url: st.url_resolved,
+                homepage: st.homepage || "",
+                freq: assignedFreq,
+                band: currentBand
+              };
+            });
+
+          renderStationsList(loadedStations);
         })
         .catch(() => {
-          stationLabel.textContent = "Error al conectar con el servidor de radios.";
+          container.innerHTML = `
+            <div class="text-center py-8 text-rose-400 text-xs">
+              <i class="fa-solid fa-triangle-exclamation text-xl mb-2"></i>
+              <p>Error de conexión al buscar emisoras.</p>
+            </div>
+          `;
         });
     }
 
-    function buscarPorTexto() {
-      const texto = document.getElementById('search-input').value.trim();
-      if (!texto) return;
-      stationLabel.textContent = `Buscando "${texto}"...`;
-
-      fetch(`https://de1.api.radio-browser.info/json/stations/byname/${encodeURIComponent(texto)}?hidebroken=true`)
-        .then(res => res.json())
-        .then(data => {
-          const seguras = data.filter(s => s.url_resolved && s.url_resolved.startsWith('https://')).slice(0, 30);
-          mostrarResultados(seguras);
-        })
-        .catch(() => {
-          stationLabel.textContent = "Error en la búsqueda.";
-        });
-    }
-
-    function mostrarResultados(stations) {
-      const lista = document.getElementById('station-list');
-      lista.innerHTML = '';
+    function renderStationsList(stations) {
+      const container = document.getElementById('tab-content-stations');
+      document.getElementById('stations-count').textContent = stations.length;
 
       if (stations.length === 0) {
-        lista.innerHTML = '<div class="station-item" style="color:#888; justify-content:center;">No se encontraron emisoras.</div>';
-        return;
-      }
-
-      stations.forEach(station => {
-        const div = document.createElement('div');
-        div.className = 'station-item';
-        div.innerHTML = `
-          <span>📻 <b>${station.name}</b></span>
-          <span style="color: #0066cc; font-size: 0.8rem; font-weight:600;">Escuchar</span>
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-500 text-xs">
+            <i class="fa-solid fa-radio text-xl mb-2"></i>
+            <p>No se encontraron estaciones HTTPS disponibles.</p>
+          </div>
         `;
-        div.onclick = () => sintonizar(station.url_resolved, station.name);
-        lista.appendChild(div);
-      });
-      stationLabel.textContent = `${stations.length} emisoras encontradas. Haz clic en una para escuchar.`;
-    }
-
-    function sintonizar(url, name) {
-      currentUrl = url;
-      currentName = name;
-      stationLabel.textContent = `Reproduciendo: ${name}`;
-      audio.src = url;
-      audio.play().then(() => {
-        playBtn.textContent = 'Pausar';
-      }).catch(() => {
-        alert("El navegador bloqueó la reproducción automática o la radio no está disponible.");
-      });
-    }
-
-    function togglePlay() {
-      if (!currentUrl) {
-        alert("Primero selecciona una emisora de la lista.");
         return;
       }
+
+      container.innerHTML = '';
+      stations.forEach(st => {
+        const isCurrent = activeStation && activeStation.url === st.url;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border text-xs flex justify-between items-center cursor-pointer transition-all ${
+          isCurrent 
+            ? 'bg-sky-500/15 border-sky-500/50 text-white shadow-md' 
+            : 'bg-slate-900 hover:bg-slate-800/80 border-slate-800 text-slate-300'
+        }`;
+        
+        card.innerHTML = `
+          <div class="flex items-center gap-2.5 overflow-hidden pr-2">
+            <div class="w-7 h-7 rounded-lg ${isCurrent ? 'bg-sky-500 text-slate-950' : 'bg-slate-800 text-sky-400'} flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <i class="fa-solid ${isCurrent && isPlaying ? 'fa-volume-high' : 'fa-broadcast-tower'}"></i>
+            </div>
+            <div class="truncate">
+              <div class="font-bold truncate text-white">${st.name}</div>
+              <div class="text-[10px] text-slate-400 flex items-center gap-2">
+                <span><i class="fa-solid fa-globe text-[9px] mr-0.5"></i> ${st.country}</span>
+                <span class="text-sky-400 font-mono">${st.freq} ${BANDS[st.band].unit}</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="event.stopPropagation(); tuneStation('${st.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold text-[11px] flex-shrink-0">
+            Sintonizar
+          </button>
+        `;
+        card.onclick = () => tuneStation(st.id);
+        container.appendChild(card);
+      });
+    }
+
+    /* Dial frequency station matching */
+    function findNearestStationToFrequency() {
+      if (loadedStations.length === 0) return;
+      
+      // Find closest station on current band
+      let closest = loadedStations[0];
+      let minDiff = Math.abs(loadedStations[0].freq - currentFrequency);
+
+      for (let i = 1; i < loadedStations.length; i++) {
+        const diff = Math.abs(loadedStations[i].freq - currentFrequency);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = loadedStations[i];
+        }
+      }
+
+      if (closest) {
+        tuneStationObj(closest, false);
+      }
+    }
+
+    function tuneStation(stationId) {
+      const station = loadedStations.find(s => s.id === stationId) || favorites.find(s => s.id === stationId);
+      if (station) {
+        tuneStationObj(station, true);
+      }
+    }
+
+    function tuneStationObj(station, updateDialFrequency = true) {
+      activeStation = station;
+      
+      if (updateDialFrequency && station.freq) {
+        currentFrequency = station.freq;
+        document.getElementById('freq-slider').value = currentFrequency;
+        updateFrequencyDisplay();
+      }
+
+      document.getElementById('station-title').textContent = station.name;
+      document.getElementById('station-subtext').textContent = `${station.country || 'Mundial'} • ${currentFrequency} ${BANDS[currentBand].unit}`;
+
+      updateFavIconUI();
+
+      // Play Stream
+      audio.src = station.url;
+      setStatus('CONECTANDO...', 'bg-sky-500', 'Estableciendo señal');
+      
+      audio.play().then(() => {
+        isPlaying = true;
+        updatePlayBtnUI();
+      }).catch(err => {
+        setStatus('ERROR AL Cargar', 'bg-rose-500', 'Haga clic en Reproducir para reintentar');
+      });
+
+      // Refresh list highlights
+      if (activeTab === 'stations') renderStationsList(loadedStations);
+      else updateFavoritesListUI();
+    }
+
+    /* Play/Pause Control */
+    function togglePlay() {
+      if (!activeStation) {
+        if (loadedStations.length > 0) {
+          tuneStationObj(loadedStations[0]);
+        } else {
+          alert('Por favor, busque o seleccione una emisora de la lista primero.');
+        }
+        return;
+      }
+
       if (audio.paused) {
-        audio.play();
-        playBtn.textContent = 'Pausar';
+        audio.play().catch(e => {
+          alert('No se pudo reproduir el stream. Intente con otra emisora.');
+        });
       } else {
         audio.pause();
-        playBtn.textContent = 'Reproducir';
       }
     }
 
-    function agregarAFavoritos() {
-      if (!currentUrl || !currentName) {
-        alert("Sintoniza una emisora primero para poder guardarla.");
-        return;
-      }
-      // Verificar si ya existe
-      if (!favoritos.some(f => f.url === currentUrl)) {
-        favoritos.push({ name: currentName, url: currentUrl });
-        localStorage.setItem('user_radio_favs', JSON.stringify(favoritos));
-        renderizarFavoritos();
-        alert(`¡"${currentName}" se guardó en tus favoritos!`);
+    function updatePlayBtnUI() {
+      const btnText = document.getElementById('play-btn-text');
+      const btnIcon = document.getElementById('play-btn-icon');
+      
+      if (isPlaying) {
+        btnText.textContent = 'PAUSAR';
+        btnIcon.className = 'fa-solid fa-pause text-lg';
       } else {
-        alert("Esta emisora ya está guardada en tus favoritos.");
+        btnText.textContent = 'REPRODUCIR';
+        btnIcon.className = 'fa-solid fa-play text-lg';
       }
     }
 
-    function eliminarFavorito(index, event) {
-      event.stopPropagation();
-      favoritos.splice(index, 1);
-      localStorage.setItem('user_radio_favs', JSON.stringify(favoritos));
-      renderizarFavoritos();
-    }
-
-    function renderizarFavoritos() {
-      const contenedor = document.getElementById('favorites-list');
-      contenedor.innerHTML = '';
-
-      if (favoritos.length === 0) {
-        contenedor.innerHTML = '<div style="font-size: 0.8rem; color: #888; text-align: center; padding: 10px;">No tienes favoritos guardados todavía. Usa el botón "⭐ Guardar".</div>';
+    function toggleCurrentFavorite() {
+      if (!activeStation) {
+        alert('Sintonice una emisora antes de agregar a favoritos.');
         return;
       }
 
-      favoritos.forEach((fav, index) => {
-        const card = document.createElement('div');
-        card.className = 'fav-card';
-        card.innerHTML = `
-          <span class="fav-card-name" title="${fav.name}">⭐ ${fav.name}</span>
-          <button class="btn-delete" title="Eliminar favorito" onclick="eliminarFavorito(${index}, event)">×</button>
+      const index = favorites.findIndex(f => f.url === activeStation.url);
+      if (index >= 0) {
+        // Remove
+        favorites.splice(index, 1);
+      } else {
+        // Add
+        favorites.push({
+          id: activeStation.id || String(Date.now()),
+          name: activeStation.name,
+          country: activeStation.country,
+          url: activeStation.url,
+          freq: currentFrequency,
+          band: currentBand
+        });
+      }
+
+      saveFavorites();
+      updateFavIconUI();
+      updateFavoritesListUI();
+    }
+
+    function addCurrentToFavorites() {
+      if (!activeStation) {
+        alert('Primero active o sintonice una radio.');
+        return;
+      }
+      
+      const exists = favorites.some(f => f.url === activeStation.url);
+      if (!exists) {
+        favorites.push({
+          id: activeStation.id || String(Date.now()),
+          name: activeStation.name,
+          country: activeStation.country,
+          url: activeStation.url,
+          freq: currentFrequency,
+          band: currentBand
+        });
+        saveFavorites();
+        updateFavIconUI();
+        updateFavoritesListUI();
+        alert(`¡"${activeStation.name}" guardada en Favoritos!`);
+      } else {
+        alert('Esta emisora ya está en sus favoritos.');
+      }
+    }
+
+    function removeFavorite(favId, event) {
+      if (event) event.stopPropagation();
+      favorites = favorites.filter(f => f.id !== favId);
+      saveFavorites();
+      updateFavIconUI();
+      updateFavoritesListUI();
+    }
+
+    function saveFavorites() {
+      localStorage.setItem('radio_universal_favs', JSON.stringify(favorites));
+    }
+
+    function updateFavIconUI() {
+      const favIcon = document.getElementById('fav-icon');
+      if (activeStation && favorites.some(f => f.url === activeStation.url)) {
+        favIcon.className = 'fa-solid fa-star text-amber-400';
+      } else {
+        favIcon.className = 'fa-regular fa-star text-amber-400';
+      }
+    }
+
+    function updateFavoritesListUI() {
+      const container = document.getElementById('tab-content-favs');
+      document.getElementById('favs-count').textContent = favorites.length;
+
+      if (favorites.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-500 text-xs">
+            <i class="fa-regular fa-star text-2xl mb-2 text-amber-500/40"></i>
+            <p>No hay favoritos guardados aún.</p>
+            <p class="text-[10px] text-slate-600 mt-1">Presione "Guardar en Favoritos" para añadir la emisora actual.</p>
+          </div>
         `;
-        card.onclick = () => sintonizar(fav.url, fav.name);
-        contenedor.appendChild(card);
+        return;
+      }
+
+      container.innerHTML = '';
+      favorites.forEach(fav => {
+        const isCurrent = activeStation && activeStation.url === fav.url;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border text-xs flex justify-between items-center cursor-pointer transition-all ${
+          isCurrent 
+            ? 'bg-amber-500/15 border-amber-500/50 text-white shadow-md' 
+            : 'bg-slate-900 hover:bg-slate-800/80 border-slate-800 text-slate-300'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2.5 overflow-hidden pr-2">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="truncate">
+              <div class="font-bold truncate text-white">${fav.name}</div>
+              <div class="text-[10px] text-slate-400 flex items-center gap-2">
+                <span>${fav.country || 'Mundial'}</span>
+                <span class="text-amber-400 font-mono">${fav.freq || ''} ${fav.band ? BANDS[fav.band].unit : ''}</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button onclick="event.stopPropagation(); tuneStation('${fav.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold text-[11px]">
+              Escuchar
+            </button>
+            <button onclick="removeFavorite('${fav.id}', event)" title="Eliminar favorito" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        `;
+        card.onclick = () => tuneStation(fav.id);
+        container.appendChild(card);
       });
+    }
+
+    /* List Tabs Toggle */
+    function switchListTab(tab) {
+      activeTab = tab;
+      const btnStations = document.getElementById('tab-btn-stations');
+      const btnFavs = document.getElementById('tab-btn-favs');
+      const contentStations = document.getElementById('tab-content-stations');
+      const contentFavs = document.getElementById('tab-content-favs');
+
+      if (tab === 'stations') {
+        btnStations.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-sky-500/20 text-sky-400 border border-sky-500/30';
+        btnFavs.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-800 text-slate-400 border border-slate-700 hover:text-white';
+        contentStations.classList.remove('hidden');
+        contentFavs.classList.add('hidden');
+      } else {
+        btnFavs.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        btnStations.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-800 text-slate-400 border border-slate-700 hover:text-white';
+        contentFavs.classList.remove('hidden');
+        contentStations.classList.add('hidden');
+        updateFavoritesListUI();
+      }
     }
   </script>
 </body>
