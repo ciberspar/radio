@@ -352,7 +352,10 @@
     <!-- Footer -->
     <footer class="bg-slate-950 px-6 py-3 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-wrap justify-between items-center gap-2">
       <span>Radio Universal &copy; Sintonizador de Audio Hi-Fi</span>
-      <span class="text-[11px] text-slate-600">Alimentado por Radio-Browser API • PWA Ready 🐢</span>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/ciberspar/radio-universal/issues" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:underline">💬 Reportar un problema</a>
+        <span class="text-[11px] text-slate-600">Alimentado por Radio-Browser • 🐢</span>
+      </div>
     </footer>
   </main>
 
@@ -417,7 +420,6 @@
         setStatus('ONLINE', 'bg-emerald-500', 'Reproduciendo en directo');
         visualizer.classList.remove('paused');
         
-        // 🐢 ¡Activa el baile de la tortuga!
         turtle.classList.remove('turtle-idle');
         turtle.classList.add('turtle-dancing');
       });
@@ -428,7 +430,6 @@
         setStatus('PAUSADO', 'bg-amber-500', 'En espera');
         visualizer.classList.add('paused');
         
-        // 🐢 La tortuga descansa
         turtle.classList.remove('turtle-dancing');
         turtle.classList.add('turtle-idle');
       });
@@ -444,10 +445,8 @@
       });
     });
 
-    /* --- Configuración PWA (Inline Manifest & Service Worker) --- */
     let deferredPrompt;
     function setupPWA() {
-      // Manifest dinámico
       const manifestData = {
         name: "Radio Universal",
         short_name: "Radio",
@@ -469,13 +468,11 @@
       manifestLink.href = manifestURL;
       document.head.appendChild(manifestLink);
 
-      // Service Worker dinámico
       if ('serviceWorker' in navigator) {
         const swCode = `
           self.addEventListener('install', (e) => self.skipWaiting());
           self.addEventListener('activate', (e) => self.clients.claim());
           self.addEventListener('fetch', (e) => {
-            // Passthrough bave para permitir streaming en vivo
             e.respondWith(fetch(e.request).catch(() => new Response('Offline')));
           });
         `;
@@ -484,7 +481,6 @@
         navigator.serviceWorker.register(swURL).catch(() => {});
       }
 
-      // Evento de instalación PWA
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -499,7 +495,6 @@
       });
     }
 
-    /* --- Lógica de la Radio --- */
     function populateCountries() {
       const select = document.getElementById('country-select');
       COUNTRIES_LIST.forEach(country => {
