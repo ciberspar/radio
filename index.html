@@ -727,12 +727,16 @@
       audio.src = station.url;
       setStatus('CONECTANDO...', 'bg-sky-500', 'Estableciendo señal');
       
-      audio.play().then(() => {
-        isPlaying = true;
-        updatePlayBtnUI();
-      }).catch(err => {
-        setStatus('ERROR AL CARGAR', 'bg-rose-500', 'Stream no disponible');
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          isPlaying = true;
+          updatePlayBtnUI();
+        }).catch(err => {
+          console.log("Esperando búfer o reintentando reproducción...", err);
+          setStatus('CONECTANDO...', 'bg-sky-500', 'Cargando stream...');
+        });
+      }
 
       if (activeTab === 'stations') renderStationsList(loadedStations);
       else updateFavoritesListUI();
@@ -740,13 +744,24 @@
 
     function togglePlay() {
       if (!activeStation) {
-        if (loadedStations.length > 0) tuneStationObj(loadedStations[0]);
-        else alert('Busque o seleccione una emisora de la lista primero.');
+        if (loadedStations.length > 0) {
+          tuneStationObj(loadedStations[0]);
+        } else {
+          alert('Busque o seleccione una emisora de la lista primero.');
+        }
         return;
       }
 
       if (audio.paused) {
-        audio.play().catch(e => alert('No se pudo reproducir el stream.'));
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log("Interrupción de reproducción:", error);
+            setTimeout(() => {
+              audio.play().catch(e => console.error("No se pudo iniciar el audio:", e));
+            }, 300);
+          });
+        }
       } else {
         audio.pause();
       }
